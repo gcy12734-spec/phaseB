@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Car Sale | Login</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body class="animated-bg">
+
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-placeholder">OCS</div>
+                <span class="logo-text">Online Car Sale</span>
+            </a>
+            <nav class="main-nav" id="main-nav">
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 5px 10px; margin-right: 15px;">🌓</button>
+                <ul class="nav-list">
+                    <li><a href="search.html" class="nav-link">Search</a></li>
+                    <li class="auth-required hidden"><a href="add-car.html" class="nav-link">Add Car</a></li>
+                    <li class="guest-only"><a href="log-in.html" class="nav-link btn-primary">Login</a></li>
+                    <li class="guest-only"><a href="registration.html" class="nav-link">Registration</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu" id="userMenu">
+                <div class="avatar" id="userAvatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="avatar-dropdown" id="avatarDropdown"></div>
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="form-card">
+            <div class="form-header">
+                <h2 style="color: var(--text-main);">Welcome Back</h2>
+                <p style="color: var(--text-muted);">Please enter your details to sign in.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" name="loginUsername" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="loginPassword" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">Secure Login</button>
+                
+                <p style="text-align: center; margin-top: 15px;">
+                    <a href="forgot-password.html" style="color: var(--text-muted);">Forgot Password?</a>
+                </p>
+                
+                <p style="text-align: center; margin-top: 5px; color: var(--text-main);">
+                    Don't have an account? <a href="registration.html">Register here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth-state.js"></script>
+    <script>
+        // Mock Login Handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('loginUsername').value;
+            // Store mock session securely
+            localStorage.setItem('currentUser', JSON.stringify({ username: user, isLoggedIn: true }));
+            // Redirect to home dashboard
+            window.location.href = 'index.html'; 
+        });
+    </script>
+</body>
+</html>
