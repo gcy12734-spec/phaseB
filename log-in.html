@@ -73,13 +73,25 @@
     <script>
         // Mock Login Handler
         document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const user = document.getElementById('loginUsername').value;
-            // Store mock session securely
-            localStorage.setItem('currentUser', JSON.stringify({ username: user, isLoggedIn: true }));
-            // Redirect to home dashboard
+    e.preventDefault();
+    const user = document.getElementById('loginUsername').value;
+    const pass = document.getElementById('loginPassword').value;
+    
+    fetch('api/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user, password: pass })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            localStorage.setItem('currentUser', JSON.stringify({ username: data.user.username, isLoggedIn: true }));
             window.location.href = 'index.html'; 
-        });
+        } else {
+            alert(data.message);
+        }
+    });
+});
     </script>
 </body>
 </html>
