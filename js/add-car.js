@@ -89,14 +89,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3. FORM SUBMISSION ---
     form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        if (fileInput.files.length === 0) { 
-            alert('Action required: Please upload an image before submitting.'); 
-            return; 
+    e.preventDefault();
+    if (fileInput.files.length === 0) { 
+        alert('Action required: Please upload an image before submitting.'); 
+        return; 
+    }
+    
+    const formData = new FormData(form);
+    
+    fetch('api/add_car.php', {
+        method: 'POST',
+        body: formData // FormData 会自动处理文件和 multipart/form-data
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            alert('Success! Advertisement has been posted to the platform.');
+            window.location.href = 'search.html';
+        } else {
+            alert('Error: ' + data.message);
         }
-        
-        alert('Success! Advertisement has been posted to the platform.');
-        window.location.href = 'search.html';
     });
+});
 });
