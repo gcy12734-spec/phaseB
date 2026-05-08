@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. FORM SUBMISSION ---
+// --- 4. FORM SUBMISSION ---
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         let isFormValid = true;
@@ -101,8 +101,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (isFormValid) {
-            alert("Success! Account created successfully.");
-            window.location.href = 'log-in.html';
+            // 使用 FormData 收集所有输入框的值
+            const formData = new FormData(form);
+            
+            // 向后端的 register.php 发送 POST 请求
+            fetch('api/register.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    alert("Success! Account created successfully.");
+                    window.location.href = 'log-in.html';
+                } else {
+                    // 如果由于用户名或邮箱重复导致注册失败，会在这里提示
+                    alert('Registration Failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during registration.');
+            });
         }
     });
 });
