@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Car Sale | Search Cars</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo"><div class="logo-placeholder">OCS</div><span class="logo-text">Online Car Sale</span></a>
+            <nav class="main-nav" id="main-nav">
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 5px 10px; margin-right: 15px;">🌓</button>
+                <ul class="nav-list">
+                    <li><a href="search.html" class="nav-link btn-primary">Search</a></li>
+                    <li class="auth-required hidden"><a href="add-car.html" class="nav-link">Add Car</a></li>
+                    <li class="guest-only"><a href="log-in.html" class="nav-link">Login</a></li>
+                    <li class="guest-only"><a href="registration.html" class="nav-link">Registration</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu" id="userMenu">
+                <div class="avatar" id="userAvatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="avatar-dropdown" id="avatarDropdown"></div>
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <main class="container py-xl">
+        <section class="search-section">
+            <div class="filter-card">
+                <form id="searchForm" class="filter-grid">
+                    <div class="form-group col-span-2">
+                        <label for="searchModel">Car Model</label>
+                        <input type="text" id="searchModel" placeholder="e.g., Honda, Camry, BMW...">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label for="searchLocation">Location</label>
+                        <select id="searchLocation">
+                            <option value="">All Locations</option>
+                            <option value="Beijing">Beijing</option>
+                            <option value="Shanghai">Shanghai</option>
+                            <option value="Guangzhou">Guangzhou</option>
+                            <option value="Shenzhen">Shenzhen</option>
+                            <option value="Hangzhou">Hangzhou</option>
+                            <option value="Chengdu">Chengdu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="minPrice">Min Price (¥)</label>
+                        <input type="number" id="minPrice" placeholder="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxPrice">Max Price (¥)</label>
+                        <input type="number" id="maxPrice" placeholder="Any" min="0">
+                    </div>
+                    <div class="filter-actions col-span-2">
+                        <button type="submit" class="btn btn-primary" style="flex:1;">Search & Filter</button>
+                        <button type="button" id="resetBtn" class="btn btn-outline" style="flex:1;">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="results-section" style="margin-top: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                <h3 style="color: var(--text-main); margin: 0; font-size: 1.5rem;">Search Results</h3>
+                <select id="sortSelect" style="width: 200px; padding: 8px; border-radius: 6px;">
+                    <option value="default">Sort by: Default</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="year-desc">Year: Newest First</option>
+                </select>
+            </div>
+            
+            <div id="carGrid" class="car-grid"></div>
+            
+            <div id="noResults" style="display: none; text-align: center; padding: 40px; color: var(--text-muted);">
+                <p>No vehicles match your search criteria.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <h4 class="footer-brand-title">Official Brand Partners</h4>
+            <div class="brand-grid">
+                <a href="https://www.toyota.com" target="_blank" class="brand-link">TOYOTA</a>
+                <a href="https://www.bmw.com" target="_blank" class="brand-link">BMW</a>
+                <a href="https://www.audi.com" target="_blank" class="brand-link">AUDI</a>
+                <a href="https://www.tesla.com" target="_blank" class="brand-link">TESLA</a>
+                <a href="https://www.mercedes-benz.com" target="_blank" class="brand-link">MERCEDES</a>
+                <a href="https://www.porsche.com" target="_blank" class="brand-link">PORSCHE</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth-state.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>

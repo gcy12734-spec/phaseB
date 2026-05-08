@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Car Sale | Home</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-placeholder">OCS</div>
+                <span class="logo-text">Online Car Sale</span>
+            </a>
+            
+            <nav class="main-nav" id="main-nav">
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 5px 10px; margin-right: 15px;" aria-label="Toggle Dark Mode">🌓</button>
+                <ul class="nav-list">
+                    <li><a href="search.html" class="nav-link">Search</a></li>
+                    <li class="auth-required hidden"><a href="add-car.html" class="nav-link">Add Car</a></li>
+                    <li class="guest-only"><a href="log-in.html" class="nav-link">Login</a></li>
+                    <li class="guest-only"><a href="registration.html" class="nav-link btn-primary">Registration</a></li>
+                </ul>
+            </nav>
+
+            <div class="user-menu" id="userMenu">
+                <div class="avatar" id="userAvatar" aria-label="User Profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="avatar-dropdown" id="avatarDropdown"></div>
+            </div>
+
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero animated-bg">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Find Your Perfect Drive</h1>
+                    <p class="hero-subtitle">
+                        Welcome to Online Car Sale. Whether you are looking to buy a reliable second-hand vehicle or sell your current car for the best price, our platform connects buyers and sellers seamlessly. 
+                    </p>
+                    <div class="hero-actions">
+                        <a href="search.html" class="btn btn-primary btn-large">Search Cars</a>
+                        <a href="add-car.html" class="btn btn-outline btn-large auth-required hidden">Sell Your Car</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <h4 class="footer-brand-title">Official Brand Partners</h4>
+            <div class="brand-grid">
+                <a href="https://www.toyota.com" target="_blank" class="brand-link">TOYOTA</a>
+                <a href="https://www.bmw.com" target="_blank" class="brand-link">BMW</a>
+                <a href="https://www.audi.com" target="_blank" class="brand-link">AUDI</a>
+                <a href="https://www.tesla.com" target="_blank" class="brand-link">TESLA</a>
+                <a href="https://www.mercedes-benz.com" target="_blank" class="brand-link">MERCEDES</a>
+                <a href="https://www.porsche.com" target="_blank" class="brand-link">PORSCHE</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth-state.js"></script>
+</body>
+</html>

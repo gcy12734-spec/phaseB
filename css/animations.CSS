@@ -1,0 +1,68 @@
+/* ==========================================
+   css/animations.css
+   Purpose: Keyframe animations and dynamic backgrounds
+   ========================================== */
+
+.animated-bg {
+    position: relative;
+    z-index: 1;
+    background-color: var(--bg-main); 
+}
+
+/* Use pseudo-element for background to prevent text from fading */
+.animated-bg::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    background-size: 120% 120%; /* Zoom in slightly for panning effect */
+    background-repeat: no-repeat;
+    
+    /* 24-second infinite panning and crossfade animation */
+    animation: panAndFade 24s infinite ease-in-out;
+}
+
+/* Slideshow Logic: 3 images, smooth fade transitions */
+@keyframes panAndFade {
+    /* --- Image 1 --- */
+    0% { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('../images/bg1.jpg'); 
+        background-position: 0% 50%; 
+        opacity: 0; 
+    }
+    4% { opacity: 1; }
+    29% { opacity: 1; background-position: 95% 50%; }
+    33% { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('../images/bg1.jpg'); 
+        background-position: 100% 50%; 
+        opacity: 0; 
+    }
+
+    /* --- Image 2 --- */
+    33.1% { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('../images/bg2.jpg'); 
+        background-position: 0% 50%; 
+        opacity: 0; 
+    }
+    37% { opacity: 1; }
+    62% { opacity: 1; background-position: 95% 50%; }
+    66% { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('../images/bg2.jpg'); 
+        background-position: 100% 50%; 
+        opacity: 0; 
+    }
+
+    /* --- Image 3 --- */
+    66.1% { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('../images/bg3.jpg'); 
+        background-position: 0% 50%; 
+        opacity: 0; 
+    }
+    70% { opacity: 1; }
+    96% { opacity: 1; background-position: 95% 50%; }
+    100% { 
+        background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('../images/bg3.jpg'); 
+        background-position: 100% 50%; 
+        opacity: 0; 
+    }
+}
