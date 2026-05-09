@@ -1,16 +1,17 @@
 /* ==========================================
-   js/search.js
-   Purpose: Skeleton loading, 3D hover effects, filtering, sorting, and Wishlist logic.
+   js/search.js - 数据库对接优化版
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const carsData = window.mockCars || [];
     const carGrid = document.getElementById('carGrid');
     const noResults = document.getElementById('noResults');
     const searchForm = document.getElementById('searchForm');
     const resetBtn = document.getElementById('resetBtn');
     const sortSelect = document.getElementById('sortSelect'); 
     
+    // 全局变量用于存储从数据库获取的原始数据
+    let dbCars = [];
+
     function renderSkeletons() {
         carGrid.innerHTML = '';
         for(let i = 0; i < 6; i++) {
@@ -26,13 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderCars(carsToRender) {
         carGrid.innerHTML = ''; 
-        if (carsToRender.length === 0) {
+        if (!carsToRender || carsToRender.length === 0) {
             noResults.style.display = 'block';
             return;
         }
         noResults.style.display = 'none';
 
-        // 获取当前用户，以便读取他的专属收藏夹
         const userStr = localStorage.getItem('currentUser');
         const user = userStr ? JSON.parse(userStr) : null;
         const favKey = user ? `favorites_${user.username}` : null;
@@ -41,59 +41,50 @@ document.addEventListener('DOMContentLoaded', () => {
         carsToRender.forEach(car => {
             const card = document.createElement('div');
             card.className = 'car-card';
-            
-            // 判断是否已收藏
             const isFav = userFavorites.includes(car.id);
 
             card.innerHTML = `
-                <div class="favorite-btn ${isFav ? 'active' : ''}" data-id="${car.id}" title="Add to Wishlist">
+                <div class="favorite-btn ${isFav ? 'active' : ''}" data-id="${car.id}">
                     ${isFav ? '❤️' : '🤍'}
                 </div>
-                <img src="${car.image}" alt="${car.model}" class="car-card-img">
+                <img src="${car.image}" alt="${car.model}" class="car-card-img" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
                 <div class="car-card-content">
                     <h4 class="car-card-title">${car.model}</h4>
-                    <div class="car-card-price">¥${car.price.toLocaleString('en-US')}</div>
+                    <div class="car-card-price">¥${parseFloat(car.price).toLocaleString('en-US')}</div>
                     <div class="car-card-specs">
                         <span>🗓️ ${car.year}</span><span>📍 ${car.location}</span>
                     </div>
                 </div>
             `;
 
-            // 收藏按钮逻辑
+            // 收藏逻辑
             const favBtn = card.querySelector('.favorite-btn');
             favBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // 阻止卡片跳转
-                
+                e.stopPropagation();
                 if (!user || !user.isLoggedIn) {
-                    alert('Access Denied: Please log in to save vehicles to your wishlist.');
+                    alert('Please log in first.');
                     window.location.href = 'log-in.html';
                     return;
                 }
-
                 let currentFavs = JSON.parse(localStorage.getItem(favKey)) || [];
                 const index = currentFavs.indexOf(car.id);
-
                 if (index > -1) {
                     currentFavs.splice(index, 1);
-                    favBtn.classList.remove('active');
                     favBtn.textContent = '🤍';
+                    favBtn.classList.remove('active');
                 } else {
                     currentFavs.push(car.id);
-                    favBtn.classList.add('active');
                     favBtn.textContent = '❤️';
+                    favBtn.classList.add('active');
                 }
                 localStorage.setItem(favKey, JSON.stringify(currentFavs));
             });
 
-            // 3D 物理悬浮效果
+            // 3D 效果
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -10; 
-                const rotateY = ((x - centerX) / centerX) * 10;
+                const rotateX = ((e.clientY - rect.top - rect.height/2) / (rect.height/2)) * -10; 
+                const rotateY = ((e.clientX - rect.left - rect.width/2) / (rect.width/2)) * 10;
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             });
 
@@ -108,36 +99,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function simulateFetchAndRender(data) {
+    // 从数据库获取真实数据
+    function fetchAndRender() {
         renderSkeletons();
-        setTimeout(() => { renderCars(data); }, 800);
+        fetch('api/get_cars.php')
+            .then(res => res.json())
+            .then(response => {
+                if (response.status === 'success') {
+                    dbCars = response.data;
+                    setTimeout(() => renderCars(dbCars), 800);
+                }
+            })
+            .catch(err => console.error("Fetch Error:", err));
     }
 
     function handleSearchAndSort() {
         const sModel = document.getElementById('searchModel').value.toLowerCase().trim();
         const sLocation = document.getElementById('searchLocation').value;
-        const minPrice = parseInt(document.getElementById('minPrice').value) || 0;
-        const maxPrice = parseInt(document.getElementById('maxPrice').value) || Infinity;
+        const minP = parseInt(document.getElementById('minPrice').value) || 0;
+        const maxP = parseInt(document.getElementById('maxPrice').value) || Infinity;
         
-        let filtered = carsData.filter(car => 
+        let filtered = dbCars.filter(car => 
             car.model.toLowerCase().includes(sModel) &&
             (sLocation === "" || car.location === sLocation) &&
-            (car.price >= minPrice && car.price <= maxPrice)
+            (car.price >= minP && car.price <= maxP)
         );
 
-        if (sortSelect) {
-            const sortVal = sortSelect.value;
-            if (sortVal === 'price-asc') filtered.sort((a, b) => a.price - b.price);
-            if (sortVal === 'price-desc') filtered.sort((a, b) => b.price - a.price);
-            if (sortVal === 'year-desc') filtered.sort((a, b) => b.year - a.year);
-        }
+        if (sortSelect.value === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+        if (sortSelect.value === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+        if (sortSelect.value === 'year-desc') filtered.sort((a, b) => b.year - a.year);
 
-        simulateFetchAndRender(filtered);
+        renderCars(filtered);
     }
 
     if (searchForm) searchForm.addEventListener('submit', (e) => { e.preventDefault(); handleSearchAndSort(); });
     if (sortSelect) sortSelect.addEventListener('change', handleSearchAndSort);
-    if (resetBtn) resetBtn.addEventListener('click', () => { searchForm.reset(); if(sortSelect) sortSelect.value = 'default'; simulateFetchAndRender(carsData); });
+    if (resetBtn) resetBtn.addEventListener('click', () => { 
+        searchForm.reset(); 
+        sortSelect.value = 'default'; 
+        renderCars(dbCars); 
+    });
 
-    simulateFetchAndRender(carsData);
+    fetchAndRender();
 });
