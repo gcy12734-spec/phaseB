@@ -8,40 +8,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailsContainer = document.getElementById('detailsContainer');
     if (!detailsContainer) return;
 
-    // --- 1. Fetch Data ---
+    // --- 1. Get Params & User ---
     const urlParams = new URLSearchParams(window.location.search);
     const carId = parseInt(urlParams.get('id'));
     
-    // Get Current User for Wishlist logic
     const userStr = localStorage.getItem('currentUser');
     const user = userStr ? JSON.parse(userStr) : null;
     const favKey = user ? `favorites_${user.username}` : null;
 
-    // 向后端请求所有车辆数据，并找到对应的 carId
+    // --- 2. Fetch Data from DB ---
     fetch('api/get_cars.php')
         .then(res => res.json())
         .then(response => {
             if (response.status === 'success') {
                 const carsData = response.data;
-                const car = carsData.find(c => parseInt(c.id) === carId); // 确保类型匹配
+                const car = carsData.find(c => parseInt(c.id) === carId);
                 
-                // --- 2. Render View ---
+                // --- 3. Render View & Attach Listeners ---
                 if (car) {
                     detailsContainer.style.display = 'grid';
-                    document.getElementById('detailImage').src = car.image; // PHP 返回了包含 uploads/ 的路径
+                    document.getElementById('detailImage').src = car.image;
                     document.getElementById('detailTitle').textContent = car.model;
-                    document.getElementById('detailPrice').textContent = `¥${car.price.toLocaleString('en-US')}`;
+                    document.getElementById('detailPrice').textContent = `¥${parseFloat(car.price).toLocaleString('en-US')}`;
                     document.getElementById('detailYear').textContent = car.year;
                     document.getElementById('detailColor').textContent = car.color;
                     document.getElementById('detailLocation').textContent = car.location;
 
-                    // --- 3. Initialize Wishlist Button ---
+                    // Wishlist Button Logic
                     const detailFavBtn = document.getElementById('detailFavBtn');
                     let userFavorites = favKey ? (JSON.parse(localStorage.getItem(favKey)) || []) : [];
 
                     if (detailFavBtn) {
-                        const isFav = userFavorites.includes(car.id);
-                        if (isFav) {
+                        if (userFavorites.includes(car.id) || userFavorites.includes(String(car.id))) {
                             detailFavBtn.classList.add('active');
                             detailFavBtn.textContent = '❤️';
                         }
@@ -55,7 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
 
                             let currentFavs = JSON.parse(localStorage.getItem(favKey)) || [];
-                            const index = currentFavs.indexOf(car.id);
+                            const indexStr = currentFavs.indexOf(String(car.id));
+                            const indexNum = currentFavs.indexOf(parseInt(car.id));
+                            const index = indexStr > -1 ? indexStr : indexNum;
 
                             if (index > -1) {
                                 currentFavs.splice(index, 1);
@@ -69,82 +69,39 @@ document.addEventListener('DOMContentLoaded', () => {
                             localStorage.setItem(favKey, JSON.stringify(currentFavs));
                         });
                     }
+
+                    // Purchase Logic
+                    const buyBtn = document.getElementById('buyBtn');
+                    if (buyBtn) {
+                        buyBtn.addEventListener('click', () => {
+                            if (user && user.isLoggedIn) {
+                                const confirmPurchase = confirm(`Are you sure you want to purchase the ${car.model} for ¥${parseFloat(car.price).toLocaleString('en-US')}?\n\nClick OK to proceed to checkout.`);
+                                
+                                if (confirmPurchase) {
+                                    buyBtn.textContent = "Processing Order...";
+                                    buyBtn.style.backgroundColor = "#64748b";
+                                    buyBtn.disabled = true;
+
+                                    setTimeout(() => {
+                                        alert(`🎉 Success! Your order for ${car.model} has been placed.\nOur sales representative will contact you shortly.`);
+                                        window.location.href = 'index.html';
+                                    }, 1500);
+                                }
+                            } else {
+                                alert('Access Denied: Please log in to your account to make a purchase.');
+                                window.location.href = 'log-in.html';
+                            }
+                        });
+                    }
                 } else {
                     document.getElementById('errorContainer').style.display = 'block';
                 }
             } else {
                 console.error("Failed to load car details");
             }
+        })
+        .catch(error => {
+            console.error('Error fetching car details:', error);
+            document.getElementById('errorContainer').style.display = 'block';
         });
-    
-    // --- 2. Render View ---
-    if (car) {
-        detailsContainer.style.display = 'grid';
-        document.getElementById('detailImage').src = car.image;
-        document.getElementById('detailTitle').textContent = car.model;
-        document.getElementById('detailPrice').textContent = `¥${car.price.toLocaleString('en-US')}`;
-        document.getElementById('detailYear').textContent = car.year;
-        document.getElementById('detailColor').textContent = car.color;
-        document.getElementById('detailLocation').textContent = car.location;
-
-        // --- 3. Initialize Wishlist Button ---
-        const detailFavBtn = document.getElementById('detailFavBtn');
-        let userFavorites = favKey ? (JSON.parse(localStorage.getItem(favKey)) || []) : [];
-
-        if (detailFavBtn) {
-            // Check if already in favorites
-            const isFav = userFavorites.includes(car.id);
-            if (isFav) {
-                detailFavBtn.classList.add('active');
-                detailFavBtn.textContent = '❤️';
-            }
-
-            // Click listener for favorite button
-            detailFavBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-
-                // Authentication Check
-                if (!user || !user.isLoggedIn) {
-                    alert('Access Denied: Please log in to save vehicles to your wishlist.');
-                    window.location.href = 'log-in.html';
-                    return;
-                }
-
-                // Toggle logic
-                let currentFavs = JSON.parse(localStorage.getItem(favKey)) || [];
-                const index = currentFavs.indexOf(car.id);
-
-                if (index > -1) {
-                    // Remove from wishlist
-                    currentFavs.splice(index, 1);
-                    detailFavBtn.classList.remove('active');
-                    detailFavBtn.textContent = '🤍';
-                } else {
-                    // Add to wishlist
-                    currentFavs.push(car.id);
-                    detailFavBtn.classList.add('active');
-                    detailFavBtn.textContent = '❤️';
-                }
-                
-                // Save to LocalStorage
-                localStorage.setItem(favKey, JSON.stringify(currentFavs));
-            });
-        }
-
-    } else {
-        document.getElementById('errorContainer').style.display = 'block';
-    }
-
-    // --- 4. Purchase Logic ---
-    const buyBtn = document.getElementById('buyBtn');
-    if (buyBtn) {
-        buyBtn.addEventListener('click', () => {
-            if (user && user.isLoggedIn) {
-                alert(`Success! Checkout process initiated for ${car.model}.`);
-            } else {
-                alert('Access Denied: Please log in to your account to make a purchase.');
-                window.location.href = 'log-in.html';
-            }
-        });
-    }
 });
