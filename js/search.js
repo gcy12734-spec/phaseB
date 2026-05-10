@@ -1,16 +1,7 @@
 /* ==========================================
    js/search.js - 数据库对接优化版
    ========================================== */
-// 在 DOMContentLoaded 的最顶部：
-fetch('api/get_cars.php')
-    .then(res => res.json())
-    .then(response => {
-        if (response.status === 'success') {
-            window.carsData = response.data; // 将数据库真实数据赋给全局变量
-            simulateFetchAndRender(window.carsData); // 调用原有的渲染函数
-        }
-    });
-    
+
 document.addEventListener('DOMContentLoaded', () => {
     const carGrid = document.getElementById('carGrid');
     const noResults = document.getElementById('noResults');
