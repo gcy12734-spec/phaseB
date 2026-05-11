@@ -20,23 +20,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const favKey = `favorites_${user.username}`;
 
     function renderFavorites(carsData) {
-        const userFavorites = JSON.parse(localStorage.getItem(favKey)) || [];
+        let userFavorites = JSON.parse(localStorage.getItem(favKey)) || [];
         carGrid.innerHTML = ''; 
         
-        if (favCount) {
-            favCount.textContent = `${userFavorites.length} items`;
+        // 1. 先过滤出在数据库里真实存在的收藏车辆
+        const favoriteCars = carsData.filter(car => 
+            userFavorites.includes(parseInt(car.id)) || userFavorites.includes(String(car.id))
+        );
+
+        // 2. 【核心修复】数据清理：如果本地存的 ID 数量比真实找到的车多，说明有车在数据库被删了
+        if (favoriteCars.length < userFavorites.length) {
+            // 更新本地存储，剔除掉那些在数据库中已经不存在的“幽灵 ID”
+            userFavorites = favoriteCars.map(car => String(car.id));
+            localStorage.setItem(favKey, JSON.stringify(userFavorites));
         }
 
-        if (userFavorites.length === 0) {
+        // 3. 使用真实的 favoriteCars 数量更新 UI 计数，而不是本地假数据的数量
+        if (favCount) {
+            favCount.textContent = `${favoriteCars.length} items`;
+        }
+
+        // 4. 根据真实车辆数量判断是否显示“空状态”
+        if (favoriteCars.length === 0) {
             noResults.style.display = 'block';
             return;
         }
         
         noResults.style.display = 'none';
 
-        // 过滤出在收藏夹里的汽车数据 (注意 ID 类型的匹配)
-        const favoriteCars = carsData.filter(car => userFavorites.includes(parseInt(car.id)) || userFavorites.includes(String(car.id)));
-
+        // 5. 渲染卡片
         favoriteCars.forEach(car => {
             const card = document.createElement('div');
             card.className = 'car-card';
