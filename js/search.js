@@ -102,15 +102,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // 从数据库获取真实数据
     function fetchAndRender() {
         renderSkeletons();
-        fetch('api/get_cars.php')
-            .then(res => res.json())
-            .then(response => {
-                if (response.status === 'success') {
-                    dbCars = response.data;
-                    setTimeout(() => renderCars(dbCars), 800);
-                }
-            })
-            .catch(err => console.error("Fetch Error:", err));
+        // 2. 从数据库拉取真实数据，然后渲染收藏夹 (禁用缓存)
+    // 加上时间戳和 no-store 强制每次向服务器请求最新数据
+    fetch(`api/get_cars.php?_timestamp=${new Date().getTime()}`, {
+        method: 'GET',
+        headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        },
+        cache: 'no-store'
+    })
+        .then(res => res.json())
+        .then(response => {
+            if (response.status === 'success') {
+                renderFavorites(response.data);
+            } else {
+                carGrid.innerHTML = '<p style="color:red;">Failed to load data from database.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching favorites:', error);
+        });
     }
 
     function handleSearchAndSort() {
