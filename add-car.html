@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Car Sale | Add Car</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body class="animated-bg">
+
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-placeholder">OCS</div>
+                <span class="logo-text">Online Car Sale</span>
+            </a>
+            <nav class="main-nav" id="main-nav">
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 5px 10px; margin-right: 15px;">🌓</button>
+                <ul class="nav-list">
+                    <li><a href="search.html" class="nav-link">Search</a></li>
+                    <li class="auth-required hidden"><a href="add-car.html" class="nav-link btn-primary">Add Car</a></li>
+                    <li class="guest-only"><a href="log-in.html" class="nav-link">Login</a></li>
+                    <li class="guest-only"><a href="registration.html" class="nav-link">Registration</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu" id="userMenu">
+                <div class="avatar" id="userAvatar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="avatar-dropdown" id="avatarDropdown"></div>
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <main class="container py-xl">
+        <div class="form-card wide-card auth-required hidden">
+            <div class="form-header">
+                <h2 style="color: var(--text-main);">List Your Car for Sale</h2>
+                <p style="color: var(--text-muted);">Fill in the details below and upload a clear picture of your vehicle.</p>
+            </div>
+
+            <form id="addCarForm" class="add-car-layout">
+                
+                <div class="upload-column">
+                    <label style="margin-bottom: 10px;">Vehicle Image</label>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="carImage" name="carImage" accept="image/*" hidden>
+                        
+                        <div id="uploadPrompt">
+                            <div style="font-size: 3.5rem; margin-bottom: 15px;">📸</div>
+                            <p style="color: var(--text-main);"><strong>Drag & Drop</strong> your image here</p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">or click to browse local files</p>
+                        </div>
+
+                        <img id="imagePreview" class="image-preview" src="" alt="Car Preview">
+                        <button type="button" id="removeImageBtn" class="btn btn-outline remove-img-btn" style="display: none;">Remove Image</button>
+                    </div>
+                </div>
+
+                <div class="details-column">
+                    <div class="form-group">
+                        <label for="carModel">Car Model</label>
+                        <input type="text" id="carModel" name="carModel" placeholder="e.g., Toyota Camry" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label for="carYear">Manufacture Year</label>
+                            <input type="number" id="carYear" name="carYear" min="1990" max="2025" placeholder="e.g., 2021" required>
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="carColour">Exterior Colour</label>
+                            <input type="text" id="carColour" name="carColour" placeholder="e.g., Silver" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carLocation">Current Location</label>
+                        <input type="text" id="carLocation" name="carLocation" placeholder="e.g., Beijing" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carPrice">Price (¥)</label>
+                        <input type="number" id="carPrice" name="carPrice" placeholder="e.g., 150000" min="0" required>
+                    </div>
+
+                    <div class="form-actions" style="margin-top: 25px;">
+                        <button type="submit" class="btn btn-primary btn-large btn-full">Post Advertisement</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <h4 class="footer-brand-title">Official Brand Partners</h4>
+            <div class="brand-grid">
+                <a href="https://www.toyota.com" target="_blank" class="brand-link">TOYOTA</a>
+                <a href="https://www.bmw.com" target="_blank" class="brand-link">BMW</a>
+                <a href="https://www.audi.com" target="_blank" class="brand-link">AUDI</a>
+                <a href="https://www.tesla.com" target="_blank" class="brand-link">TESLA</a>
+                <a href="https://www.mercedes-benz.com" target="_blank" class="brand-link">MERCEDES</a>
+                <a href="https://www.porsche.com" target="_blank" class="brand-link">PORSCHE</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth-state.js"></script>
+    <script src="js/add-car.js"></script>
+</body>
+</html>

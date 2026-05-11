@@ -1,0 +1,78 @@
+/* ==========================================
+   css/global.css
+   Purpose: CSS Variables, Reset, and Base Typography
+   ========================================== */
+
+:root {
+    /* Light Mode Variables (Default) */
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    
+    --bg-main: #f8fafc;       /* Main body background */
+    --bg-card: rgba(255, 255, 255, 0.9); /* Form and card background */
+    
+    --text-main: #1e293b;     /* Primary text color */
+    --text-muted: #64748b;    /* Secondary/Helper text color */
+    --text-on-primary: #ffffff; /* Text on primary buttons */
+    
+    --border: #e2e8f0;
+    --error: #ef4444;
+    --success: #10b981;
+    --transition: 0.3s;
+}
+
+/* Dark Mode Variables Override */
+[data-theme="dark"] {
+    --bg-main: #0f172a;       
+    --bg-card: rgba(30, 41, 59, 0.9); 
+    
+    --text-main: #f1f5f9;     
+    --text-muted: #94a3b8;    
+    
+    --border: #334155;
+    --success: #34d399;
+}
+
+/* CSS Reset */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scrolling from animations */
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Force form elements to inherit theme colors */
+input, select, textarea, button {
+    font-family: inherit;
+    color: inherit; 
+    background-color: transparent;
+}
+
+a { 
+    text-decoration: none; 
+    color: var(--primary); 
+}
+
+ul { 
+    list-style: none; 
+}
+
+/* Utility Classes */
+.container { 
+    width: 100%; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 20px; 
+}
+
+.hidden { 
+    display: none !important; 
+}
